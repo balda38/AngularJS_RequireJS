@@ -1,6 +1,6 @@
 define(function(){
 	var coreModule = angular.module('coreModule', []);
-	coreModule.controller("calculatorController", function ($scope){
+	coreModule.controller("calculatorController", function ($scope, $timeout){
 		$scope.output = "0";
 		$scope.buffer = "0";
 		$scope.lastNumber = null;
@@ -74,11 +74,18 @@ define(function(){
 			$scope.lastOperation = "equality";
 			}
 		};
-		$scope.reset = function(){
+		$scope.resetAll = function(){
 			$scope.output = "0";
 			$scope.buffer = "0";
 			$scope.lastNumber = null;
 			$scope.lastOperation = null;
 		};
+		$scope.randomOperation = function(){
+			var operations = ['addition', 'substraction', 'multiplication', 'segmentation'];
+			$scope.lastOperation = operations[Math.floor(Math.random() * operations.length)];
+			$scope.output = $scope.lastOperation;
+			$scope.lastNumber = Math.floor(Math.random() * 1000);
+			$scope.equality();			
+		};		
 	});
 });
