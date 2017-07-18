@@ -82,13 +82,26 @@ define(function(){
 			$scope.lastOperation = null;
 		};
 		
-		var count = 0;
+		$scope.randomOperation1 = function(){
+			window.setTimeout(rndFunc, Math.floor(Math.random() * 5000));
+		};
 		
-		$scope.randomOperation = function(){			
+		
+		function rndFunc(){
+			var operations = ["+", "-", "*", "/"];
+			$scope.lastOperation = operations[Math.floor(Math.random() * operations.length)];
+			$scope.lastNumber = $scope.buffer
+			$scope.buffer = Math.floor(Math.random() * 1000);
+			$scope.operationInfo = $scope.lastOperation + $scope.buffer;
+			$scope.equality();
+		};
+		
+		var count2 = 0;
+		
+		$scope.randomOperation2 = function(){			
 			$timeout(function(){
-				if (count == 0){
-					$scope.randomOperation()
-					count++;
+				if (count2 == 0){					
+					count2++;
 					var operations = ["+", "-", "*", "/"];
 					$scope.lastOperation = operations[Math.floor(Math.random() * operations.length)];
 					$scope.lastNumber = $scope.buffer
@@ -97,7 +110,7 @@ define(function(){
 					$scope.equality();	
 					}
 				}, Math.floor(Math.random() * 5000));	
-			count = 0;
+			count2 = 0;
 		};		
 	});
 });
