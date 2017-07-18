@@ -84,10 +84,44 @@ define(function(){
 		
 		$scope.randomOperation1 = function(){
 			window.setTimeout(rndFunc, Math.floor(Math.random() * 5000));
-		};
-		
+		};		
 		
 		function rndFunc(){
+			getRandomOperation();
+		};
+		
+		var count = 0;
+		
+		$scope.randomOperation2 = function(){			
+			$timeout(function(){
+				if (count == 0){					
+					count++;
+					getRandomOperation();
+					}
+				}, Math.floor(Math.random() * 5000));	
+			count = 0;
+		};	
+		
+		$scope.randomOperation3 = function(){			
+			var promise = new Promise(function(resolve, reject){
+				$timeout(function() {
+					resolve("result");
+				}, Math.floor(Math.random() * 5000));							
+			});
+			
+			promise.then(
+				result => {
+					getRandomOperation();
+				},
+				error =>{
+					window.alert("Something wrong");
+				}
+			);
+			
+			return promise;
+		};
+
+		function getRandomOperation(){
 			var operations = ["+", "-", "*", "/"];
 			$scope.lastOperation = operations[Math.floor(Math.random() * operations.length)];
 			$scope.lastNumber = $scope.buffer
@@ -95,22 +129,5 @@ define(function(){
 			$scope.operationInfo = $scope.lastOperation + $scope.buffer;
 			$scope.equality();
 		};
-		
-		var count2 = 0;
-		
-		$scope.randomOperation2 = function(){			
-			$timeout(function(){
-				if (count2 == 0){					
-					count2++;
-					var operations = ["+", "-", "*", "/"];
-					$scope.lastOperation = operations[Math.floor(Math.random() * operations.length)];
-					$scope.lastNumber = $scope.buffer
-					$scope.buffer = Math.floor(Math.random() * 1000);
-					$scope.operationInfo = $scope.lastOperation + $scope.buffer;
-					$scope.equality();	
-					}
-				}, Math.floor(Math.random() * 5000));	
-			count2 = 0;
-		};		
 	});
 });
