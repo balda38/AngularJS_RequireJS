@@ -1,6 +1,6 @@
 require.config({
 	paths: {
-		'angular': '../js/angular.min',
+		'angular': '../bower_components/angular/angular.min',
 		'app': 'calculatorApp',
 		'coreModule': 'coreModule'
 	},
