@@ -83,12 +83,12 @@ define(function(){
 		};
 		
 		$scope.randomOperation1 = function(){
-			window.setTimeout(rndFunc, Math.floor(Math.random() * 5000));
+			window.setTimeout(function(){
+				$scope.$apply(function(){
+					getRandomOperation();
+				})
+			}, Math.floor(Math.random() * 5000));
 		};		
-		
-		function rndFunc(){
-			getRandomOperation();
-		};
 		
 		var count = 0;
 		
@@ -104,7 +104,7 @@ define(function(){
 		
 		$scope.randomOperation3 = function(){			
 			var promise = new Promise(function(resolve, reject){
-				$timeout(function() {
+				$timeout(function(){
 					resolve("result");
 				}, Math.floor(Math.random() * 5000));							
 			});
