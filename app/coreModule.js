@@ -1,85 +1,82 @@
 define(function(){
 	var coreModule = angular.module('coreModule', []);
-	coreModule.controller("calculatorController", function ($scope, $timeout){
+	coreModule.controller("calculatorController", function ($scope, $timeout, $q){
 		$scope.output = "0";
-		$scope.buffer = "0";
+		var buffer = "0";
 		$scope.lastNumber = null;
-		$scope.lastOperation = null;
+		var lastOperation = null;
 		$scope.operationInfo = null;
 		$scope.updateOutput = function(number){
-			if ($scope.output == "0" || $scope.lastOperation == "="){
+			if ($scope.output == "0" || lastOperation == "="){
 				$scope.output = number;
-				$scope.buffer = number;
-				$scope.lastOperation = null;
+				buffer = number;
+				lastOperation = null;
 			}
 			else {
 				$scope.output += String(number);
-				$scope.buffer += String(number);
+				buffer += String(number);
 			}
 		};
-		$scope.addition = function(){
+		$scope.getOperation = function(operation){
 			$scope.equality();
-			$scope.output += "+";
-			$scope.lastOperation = "+";
-			$scope.lastNumber = parseInt($scope.buffer, 10);
-			$scope.buffer = "0";
-		};
-		$scope.substraction = function(){
-			$scope.equality();
-			$scope.output += "-";
-			$scope.lastOperation = "-";
-			$scope.lastNumber = parseInt($scope.buffer, 10);
-			$scope.buffer = "0";
-		};
-		$scope.multiplication = function(){
-			$scope.equality();
-			$scope.output += "*";
-			$scope.lastOperation = "*";
-			$scope.lastNumber = parseInt($scope.buffer, 10);
-			$scope.buffer = "0";
-		};
-		$scope.segmentation = function(){
-			$scope.equality();
-			$scope.output += "/";
-			$scope.lastOperation = "/";
-			$scope.lastNumber = parseInt($scope.buffer, 10);
-			$scope.buffer = "0";
+			switch(operation){
+				case '+':
+					$scope.output += "+";
+					lastOperation = "+";
+					break;
+				case '-':
+					$scope.output += "-";
+					lastOperation = "-";
+					break;
+				case '*':
+					$scope.output += "*";
+					lastOperation = "*";
+					break;
+				case '/':
+					$scope.output += "/";
+					lastOperation = "/";
+					break;
+				default:
+					break;
+			}
+			$scope.lastNumber = parseInt(buffer, 10);
+			buffer = "0";
 		};
 		$scope.equality = function(){
-			if ($scope.lastOperation != null){
-				switch($scope.lastOperation){
+			if (lastOperation != null){
+				switch(lastOperation){
 					case '+':
-						$scope.output = $scope.lastNumber + parseInt($scope.buffer, 10);
-						$scope.buffer = $scope.lastNumber + parseInt($scope.buffer, 10);
+						$scope.output = $scope.lastNumber + parseInt(buffer, 10);
+						buffer = $scope.lastNumber + parseInt(buffer, 10);
 						break;
 					case '-':
-						$scope.output = $scope.lastNumber - parseInt($scope.buffer, 10);
-						$scope.buffer = $scope.lastNumber - parseInt($scope.buffer, 10);
+						$scope.output = $scope.lastNumber - parseInt(buffer, 10);
+						buffer = $scope.lastNumber - parseInt(buffer, 10);
 						break;
 					case '*':
-						$scope.output = $scope.lastNumber * parseInt($scope.buffer, 10);
-						$scope.buffer = $scope.lastNumber * parseInt($scope.buffer, 10);
+						$scope.output = $scope.lastNumber * parseInt(buffer, 10);
+						buffer = $scope.lastNumber * parseInt(buffer, 10);
 						break;
 					case '/':
-						if (parseInt($scope.buffer, 10) == 0){
+						if (parseInt(buffer, 10) == 0){
 							window.alert("Деление на ноль невозможно!");
 						}
 						else {
-							$scope.output = $scope.lastNumber / parseInt($scope.buffer, 10);
-							$scope.buffer = $scope.lastNumber / parseInt($scope.buffer, 10);
+							$scope.output = $scope.lastNumber / parseInt(buffer, 10);
+							buffer = $scope.lastNumber / parseInt(buffer, 10);
 						}
 						break;
 					default:
 						break;
 				}
-			$scope.lastOperation = "=";
+			lastOperation = "=";
 			}
 		};
 		$scope.resetAll = function(){
 			$scope.output = "0";
-			$scope.buffer = "0";
+			buffer = "0";
 			$scope.lastNumber = null;
-			$scope.lastOperation = null;
+			lastOperation = null;
 		};
 		
 		$scope.randomOperation1 = function(){
@@ -103,7 +100,7 @@ define(function(){
 		};	
 		
 		$scope.randomOperation3 = function(){			
-			var promise = new Promise(function(resolve, reject){
+			var promise = $q(function(resolve, reject){
 				$timeout(function(){
 					resolve("result");
 				}, Math.floor(Math.random() * 5000));							
@@ -123,10 +120,10 @@ define(function(){
 
 		function getRandomOperation(){
 			var operations = ["+", "-", "*", "/"];
-			$scope.lastOperation = operations[Math.floor(Math.random() * operations.length)];
-			$scope.lastNumber = $scope.buffer
-			$scope.buffer = Math.floor(Math.random() * 1000);
-			$scope.operationInfo = $scope.lastOperation + $scope.buffer;
+			lastOperation = operations[Math.floor(Math.random() * operations.length)];
+			$scope.lastNumber = buffer;
+			buffer = Math.floor(Math.random() * 1000);
+			$scope.operationInfo = lastOperation + buffer;
 			$scope.equality();
 		};
 	});
