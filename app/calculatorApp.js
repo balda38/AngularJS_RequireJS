@@ -1,3 +1,3 @@
 define(function(){
-	angular.module('calculatorApp', ['coreModule']);
+	var calculatorapp = angular.module('calculatorApp', ['coreModule']);
 });
