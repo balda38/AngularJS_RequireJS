@@ -5,16 +5,16 @@
 <link rel="stylesheet" href="bower_components/bootstrap/dist/css/bootstrap.min.css">
 <link rel="stylesheet" href="css/style.css" type="text/css">
 </head>
-<body data-ng-controller="calculatorController">
+<body>
 	<div class="page-header">
 		<h1>Калькулятор</h1>
 	</div>	
-	<div class="panel">
-		<div calculator-directive="calculatorDirective1"></div>
+	<div ng-app="coreModule">
+		<calculator-directive calc="calculator1"></calculator-directive>
 		
-		<div calculator-directive="calculatorDirective2"></div>
+		<calculator-directive calc="calculator2"></calculator-directive>
 		
-		<div calculator-directive="calculatorDirective3"></div>
+		<calculator-directive calc="calculator3"></calculator-directive>
 	</div>	
 <script src="bower_components/requirejs/require.js" data-main="app/main"></script>	
 </body>
