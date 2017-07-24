@@ -2,15 +2,20 @@ require.config({
 	paths: {
 		'angular': '../bower_components/angular/angular.min',
 		'app': 'calculatorApp',
-		'coreModule': 'coreModule'
+		'calcFactory': 'factories/calcFactory',
+		'calcDirective': 'directives/calcDirective'
 	},
 	
 	shim: {
 		'app': {
-			deps: ['angular', 'coreModule']
+			deps: ['angular', 'calcFactory', 'calcDirective']
 		},
 		
-		'coreModule':{
+		'calcFactory':{
+			deps: ['angular']
+		},
+		
+		'calcDirective':{
 			deps: ['angular']
 		}
 	}
