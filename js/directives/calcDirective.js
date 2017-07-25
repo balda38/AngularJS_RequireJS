@@ -50,85 +50,70 @@ define(function(){
 			},
 			controller: function($scope, $attrs, $timeout, $q){	
 				
-				var calc = $attrs.calc;
+				var calc = $attrs.calc;				
+				calculatorFactory.setArrays(calc);				
 				
-				switch(calc){
-					case "calculator1":
-						getData(0);
-						break;
-					case "calculator2":
-						getData(1);
-						break;
-					case "calculator3":
-						getData(2);
-						break;
-					default:
-						break;
+				$scope.output = calculatorFactory.output[calc];
+				
+				$scope.upOut = function(inpNum){
+					$scope.output = calculatorFactory.updateOutput(inpNum, calc);	
 				};
 				
-				function getData(calc){
-					$scope.output = calculatorFactory.getOutput(calc);
-					
-					$scope.upOut = function(inpNum){
-						$scope.output = calculatorFactory.updateOutput(inpNum, calc);	
-					};
-					
-					$scope.getOper = function(operation){
-						$scope.output = calculatorFactory.getOperation(operation, calc);
-					};
-					
-					$scope.equal = function(){
-						$scope.output = calculatorFactory.equality(calc);
-					};
-					
-					$scope.rstAll = function(){
-						$scope.output = calculatorFactory.resetAll(calc);
-					};
-					
-					$scope.rndOper1 = function(){
-						window.setTimeout(function(){
-							$scope.$apply(function(){
-								$scope.output = calculatorFactory.getRandomOperation(calc);	
-								$scope.lastNumber = calculatorFactory.getLastNumber(calc);	
-								$scope.operationInfo = calculatorFactory.getOperationInfo(calc);	
-							})
-						}, Math.floor(Math.random() * 5000));
-					};
-					
-					var count = 0;
-					$scope.rndOper2 = function(){
-						$timeout(function(){
-							if (count == 0){					
-								count++;
-								$scope.output = calculatorFactory.getRandomOperation(calc);	
-								$scope.lastNumber = calculatorFactory.getLastNumber(calc);	
-								$scope.operationInfo = calculatorFactory.getOperationInfo(calc);	
-								}
-							}, Math.floor(Math.random() * 5000));	
-						count = 0;
-					};
-					
-					$scope.rndOper3 = function(){
-						var promise = $q(function(resolve, reject){
-							$timeout(function(){
-								resolve("result");
-							}, Math.floor(Math.random() * 5000));							
-						});
-						
-						promise.then(
-							result => {
-								$scope.output = calculatorFactory.getRandomOperation(calc);	
-								$scope.lastNumber = calculatorFactory.getLastNumber(calc);	
-								$scope.operationInfo = calculatorFactory.getOperationInfo(calc);	
-							},
-							error =>{
-								window.alert("Something wrong");
+				$scope.getOper = function(operation){
+					$scope.output = calculatorFactory.getOperation(operation, calc);
+				};
+				
+				$scope.equal = function(){
+					$scope.output = calculatorFactory.equality(calc);
+				};
+				
+				$scope.rstAll = function(){
+					$scope.output = calculatorFactory.resetAll(calc);
+				};
+				
+				$scope.rndOper1 = function(){
+					window.setTimeout(function(){
+						$scope.$apply(function(){
+							$scope.output = calculatorFactory.getRandomOperation(calc);	
+							$scope.lastNumber = calculatorFactory.lastNumber[calc];	
+							$scope.operationInfo = calculatorFactory.operationInfo[calc];	
+						})
+					}, Math.floor(Math.random() * 5000));
+				};
+				
+				var count = 0;
+				$scope.rndOper2 = function(){
+					$timeout(function(){
+						if (count == 0){					
+							count++;
+							$scope.output = calculatorFactory.getRandomOperation(calc);	
+							$scope.lastNumber = calculatorFactory.lastNumber[calc];	
+							$scope.operationInfo = calculatorFactory.operationInfo[calc];	
 							}
-						);
-						
-						return promise;
-					};		
+						}, Math.floor(Math.random() * 5000));	
+					count = 0;
 				};
+				
+				$scope.rndOper3 = function(){
+					var promise = $q(function(resolve, reject){
+						$timeout(function(){
+							resolve("result");
+						}, Math.floor(Math.random() * 5000));							
+					});
+					
+					promise.then(
+						result => {
+							$scope.output = calculatorFactory.getRandomOperation(calc);	
+							$scope.lastNumber = calculatorFactory.lastNumber[calc];	
+							$scope.operationInfo = calculatorFactory.operationInfo[calc];	
+						},
+						error =>{
+							window.alert("Something wrong");
+						}
+					);
+					
+					return promise;
+				};		
 			},
 			link: function (scope, element, attrs) {					
 			}	

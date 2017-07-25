@@ -1,118 +1,114 @@
 define(function(){
 	var factoryModule = angular.module('calcFactory', []);
 	
-	factoryModule.factory('calculatorFactory', function(){
-		var output = ["0", "0", "0"];
-		var buffer = ["0", "0", "0"];
-		var lastNumber = ["0", "0", "0"];
-		var lastOperation = [null, null, null];
-		var operationInfo = ["", "", ""];
+	factoryModule.factory('calculatorFactory', function(){		
 		
-		var outputObject = {};
-		
-		outputObject.updateOutput = function(number, calc){			
-			if (output[calc] == "0" || lastOperation[calc] == "="){
-				output[calc] = number;
-				buffer[calc] = number;
-				lastOperation[calc] = null;
-			}
-			else {
-				output[calc] += String(number);
-				buffer[calc] += String(number);
-			}
-			return output[calc];
-		};
-		
-		outputObject.getOperation = function(operation, calc){
-			outputObject.equality(calc);
-			switch(operation){
-				case '+':
-					output[calc] += "+";
-					lastOperation[calc] = "+";
-					break;
-				case '-':
-					output[calc] += "-";
-					lastOperation[calc] = "-";
-					break;
-				case '*':
-					output[calc] += "*";
-					lastOperation[calc] = "*";
-					break;
-				case '/':
-					output[calc] += "/";
-					lastOperation[calc] = "/";
-					break;
-				default:
-					break;
-			}
-			lastNumber[calc] = parseInt(buffer[calc], 10);
-			buffer[calc] = "0";
-			return output[calc];
-		};
-		
-		 outputObject.equality = function(calc){
-			if (lastOperation[calc] != null){
-				switch(lastOperation[calc]){
+		var outputObject = {		
+				
+			output: [],
+			buffer: [],
+			lastNumber: [],
+			lastOperation: [],
+			operationInfo: [],
+			
+			setArrays: function(calc){
+				outputObject.output[calc] = "0";
+				outputObject.buffer[calc] = "0";
+				outputObject.lastNumber[calc] = "0";
+				outputObject.lastOperation[calc] = null;
+				outputObject.operationInfo[calc] = null;
+			},
+			
+			updateOutput: function(number, calc){			
+				if (outputObject.output[calc] == "0" || outputObject.lastOperation[calc] == "="){
+					outputObject.output[calc] = number;
+					outputObject.buffer[calc] = number;
+					outputObject.lastOperation[calc] = null;
+				}
+				else {
+					outputObject.output[calc] += String(number);
+					outputObject.buffer[calc] += String(number);
+				}
+				return outputObject.output[calc];
+			},
+			
+			getOperation: function(operation, calc){
+				outputObject.equality(calc);
+				switch(operation){
 					case '+':
-						output[calc] = lastNumber[calc] + parseInt(buffer[calc], 10);
-						buffer[calc] = lastNumber[calc] + parseInt(buffer[calc], 10);
+						outputObject.output[calc] += "+";
+						outputObject.lastOperation[calc] = "+";
 						break;
 					case '-':
-						output[calc] = lastNumber[calc] - parseInt(buffer[calc], 10);
-						buffer[calc] = lastNumber[calc] - parseInt(buffer[calc], 10);
+						outputObject.output[calc] += "-";
+						outputObject.lastOperation[calc] = "-";
 						break;
 					case '*':
-						output[calc] = lastNumber[calc] * parseInt(buffer[calc], 10);
-						buffer[calc] = lastNumber[calc] * parseInt(buffer[calc], 10);
+						outputObject.output[calc] += "*";
+						outputObject.lastOperation[calc] = "*";
 						break;
 					case '/':
-						if (parseInt(buffer[calc], 10) == 0){
+						outputObject.output[calc] += "/";
+						outputObject.lastOperation[calc] = "/";
+						break;
+					default:
+						break;
+				}
+				outputObject.lastNumber[calc] = parseInt(outputObject.buffer[calc], 10);
+				outputObject.buffer[calc] = "0";
+				return outputObject.output[calc];
+			},
+			
+			equality: function(calc){
+				switch(outputObject.lastOperation[calc]){
+					case '+':
+						outputObject.output[calc] = outputObject.lastNumber[calc] + parseInt(outputObject.buffer[calc], 10);
+						outputObject.buffer[calc] = outputObject.lastNumber[calc] + parseInt(outputObject.buffer[calc], 10);
+						break;
+					case '-':
+						outputObject.output[calc] = outputObject.lastNumber[calc] - parseInt(outputObject.buffer[calc], 10);
+						outputObject.buffer[calc] = outputObject.lastNumber[calc] - parseInt(outputObject.buffer[calc], 10);
+						break;
+					case '*':
+						outputObject.output[calc] = outputObject.lastNumber[calc] * parseInt(outputObject.buffer[calc], 10);
+						outputObject.buffer[calc] = outputObject.lastNumber[calc] * parseInt(outputObject.buffer[calc], 10);
+						break;
+					case '/':
+						if (parseInt(outputObject.buffer[calc], 10) == 0){
 							window.alert("Деление на ноль невозможно!");
 						}
 						else {
-							output[calc] = lastNumber[calc] / parseInt(buffer[calc], 10);
-							buffer[calc] = lastNumber[calc] / parseInt(buffer[calc], 10);
+							outputObject.output[calc] = outputObject.lastNumber[calc] / parseInt(outputObject.buffer[calc], 10);
+							outputObject.buffer[calc] = outputObject.lastNumber[calc] / parseInt(outputObject.buffer[calc], 10);
 						}
 						break;
 					default:
 						break;
 				}
-			lastOperation[calc] = "=";
+				outputObject.lastOperation[calc] = "=";
+				return outputObject.output[calc];
+			},
+			
+			resetAll: function(calc){
+				outputObject.output[calc] = "0";
+				outputObject.buffer[calc] = "0";
+				outputObject.lastNumber[calc] = null;
+				outputObject.lastOperation[calc] = null;
+				return outputObject.output[calc];
+			},		
+			
+			getRandomOperation: function(calc){
+				outputObject.equality(calc);
+				var operations = ["+", "-", "*", "/"];
+				outputObject.lastOperation[calc] = operations[Math.floor(Math.random() * operations.length)];
+				outputObject.lastNumber[calc] = outputObject.buffer[calc];
+				outputObject.buffer[calc] = Math.floor(Math.random() * 1000);
+				outputObject.operationInfo[calc] = outputObject.lastOperation[calc] + outputObject.buffer[calc];
+				outputObject.equality(calc);
+				return outputObject.output[calc];
 			}
-			return output[calc];
 		};
 		
-		outputObject.resetAll = function(calc){
-			output[calc] = "0";
-			buffer[calc] = "0";
-			lastNumber[calc] = null;
-			lastOperation[calc] = null;
-			return output[calc];
-		};		
-		
-		outputObject.getRandomOperation = function(calc){
-			outputObject.equality(calc);
-			var operations = ["+", "-", "*", "/"];
-			lastOperation[calc] = operations[Math.floor(Math.random() * operations.length)];
-			lastNumber[calc] = buffer[calc];
-			buffer[calc] = Math.floor(Math.random() * 1000);
-			operationInfo[calc] = lastOperation[calc] + buffer[calc];
-			outputObject.equality(calc);
-			return output[calc];
-		};
-		
-		outputObject.getOutput = function(calc){
-			return output[calc];
-		};
-		
-		outputObject.getLastNumber = function(calc){
-			return lastNumber[calc];
-		};
-		
-		outputObject.getOperationInfo = function(calc){
-			return operationInfo[calc];
-		};
-
 		return outputObject;	
 
 	});
