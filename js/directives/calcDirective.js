@@ -45,38 +45,35 @@ define(function(){
 						"<p name='information'>С числом {{lastNumber || 0}} была произведена операция: {{operationInfo}}</p>"+
 					"</div>"+
 				"</div>",
-			scope:{
-				calc: '@'
-			},
-			controller: function($scope, $attrs, $timeout, $q){	
+			scope:{},
+			controller: function($scope, $attrs, $timeout, $q){											
 				
-				var calc = $attrs.calc;				
-				calculatorFactory.setArrays(calc);				
+				var calcFactory = calculatorFactory();
 				
-				$scope.output = calculatorFactory.output[calc];
+				$scope.output = calcFactory.output;
 				
 				$scope.upOut = function(inpNum){
-					$scope.output = calculatorFactory.updateOutput(inpNum, calc);	
+					$scope.output = calcFactory.updateOutput(inpNum);	
 				};
 				
 				$scope.getOper = function(operation){
-					$scope.output = calculatorFactory.getOperation(operation, calc);
+					$scope.output = calcFactory.getOperation(operation);
 				};
 				
 				$scope.equal = function(){
-					$scope.output = calculatorFactory.equality(calc);
+					$scope.output = calcFactory.equality();
 				};
 				
 				$scope.rstAll = function(){
-					$scope.output = calculatorFactory.resetAll(calc);
+					$scope.output = calcFactory.resetAll();
 				};
 				
 				$scope.rndOper1 = function(){
 					window.setTimeout(function(){
 						$scope.$apply(function(){
-							$scope.output = calculatorFactory.getRandomOperation(calc);	
-							$scope.lastNumber = calculatorFactory.lastNumber[calc];	
-							$scope.operationInfo = calculatorFactory.operationInfo[calc];	
+							$scope.output = calcFactory.getRandomOperation();	
+							$scope.lastNumber = calcFactory.lastNumber;	
+							$scope.operationInfo = calcFactory.operationInfo;	
 						})
 					}, Math.floor(Math.random() * 5000));
 				};
@@ -86,9 +83,9 @@ define(function(){
 					$timeout(function(){
 						if (count == 0){					
 							count++;
-							$scope.output = calculatorFactory.getRandomOperation(calc);	
-							$scope.lastNumber = calculatorFactory.lastNumber[calc];	
-							$scope.operationInfo = calculatorFactory.operationInfo[calc];	
+							$scope.output = calcFactory.getRandomOperation();	
+							$scope.lastNumber = calcFactory.lastNumber;	
+							$scope.operationInfo = calcFactory.operationInfo;	
 							}
 						}, Math.floor(Math.random() * 5000));	
 					count = 0;
@@ -103,9 +100,9 @@ define(function(){
 					
 					promise.then(
 						result => {
-							$scope.output = calculatorFactory.getRandomOperation(calc);	
-							$scope.lastNumber = calculatorFactory.lastNumber[calc];	
-							$scope.operationInfo = calculatorFactory.operationInfo[calc];	
+							$scope.output = calcFactory.getRandomOperation();	
+							$scope.lastNumber = calcFactory.lastNumber;	
+							$scope.operationInfo = calcFactory.operationInfo;	
 						},
 						error =>{
 							window.alert("Something wrong");
