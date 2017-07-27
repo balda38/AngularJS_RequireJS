@@ -49,31 +49,43 @@ define(function(){
 			controller: function($scope, $attrs, $timeout, $q){											
 				
 				var calcFactory = calculatorFactory();
-				
-				$scope.output = calcFactory.output;
+
+				calcFactory.setData(false, function(state){
+					$scope.output = state;
+				});
 				
 				$scope.upOut = function(inpNum){
-					$scope.output = calcFactory.updateOutput(inpNum);	
+					calcFactory.updateOutput(inpNum, function(state){
+						$scope.output = state;
+					});	
 				};
 				
 				$scope.getOper = function(operation){
-					$scope.output = calcFactory.getOperation(operation);
+					calcFactory.getOperation(operation, function(state){
+						$scope.output = state;
+					});
 				};
 				
 				$scope.equal = function(){
-					$scope.output = calcFactory.equality();
+					calcFactory.equality(function(state){
+						$scope.output = state;
+					});
 				};
 				
 				$scope.rstAll = function(){
-					$scope.output = calcFactory.resetAll();
+					calcFactory.resetAll(function(state){
+						$scope.output = state;
+					});
 				};
 				
 				$scope.rndOper1 = function(){
 					window.setTimeout(function(){
 						$scope.$apply(function(){
-							$scope.output = calcFactory.getRandomOperation();	
-							$scope.lastNumber = calcFactory.lastNumber;	
-							$scope.operationInfo = calcFactory.operationInfo;	
+							calcFactory.getRandomOperation(function(state){								
+								$scope.output = state[0];
+								$scope.lastNumber = state[1];
+								$scope.operationInfo = state[2];
+							});	
 						})
 					}, Math.floor(Math.random() * 5000));
 				};
@@ -82,12 +94,13 @@ define(function(){
 				$scope.rndOper2 = function(){
 					$timeout(function(){
 						if (count == 0){					
-							count++;
-							$scope.output = calcFactory.getRandomOperation();	
-							$scope.lastNumber = calcFactory.lastNumber;	
-							$scope.operationInfo = calcFactory.operationInfo;	
-							}
-						}, Math.floor(Math.random() * 5000));	
+							calcFactory.getRandomOperation(function(state){
+								$scope.output = state[0];
+								$scope.lastNumber = state[1];
+								$scope.operationInfo = state[2];
+							});		
+						}
+					}, Math.floor(Math.random() * 5000));	
 					count = 0;
 				};
 				
@@ -100,9 +113,11 @@ define(function(){
 					
 					promise.then(
 						result => {
-							$scope.output = calcFactory.getRandomOperation();	
-							$scope.lastNumber = calcFactory.lastNumber;	
-							$scope.operationInfo = calcFactory.operationInfo;	
+							calcFactory.getRandomOperation(function(state){
+								$scope.output = state[0];
+								$scope.lastNumber = state[1];
+								$scope.operationInfo = state[2];
+							});	
 						},
 						error =>{
 							window.alert("Something wrong");
@@ -110,7 +125,7 @@ define(function(){
 					);
 					
 					return promise;
-				};		
+				};	
 			},
 			link: function (scope, element, attrs) {					
 			}	
