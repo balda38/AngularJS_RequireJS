@@ -50,42 +50,34 @@ define(function(){
 				
 				var calcFactory = calculatorFactory();
 
-				calcFactory.setData(false, function(state){
-					$scope.output = state;
-				});
+				calcFactory.setOutputFunc = function(state){
+					$scope.output = state[0];
+					$scope.lastNumber = state[1];
+					$scope.operationInfo = state[2];
+				};
+				
+				calcFactory.setData(calcFactory.setOutputFunc);
 				
 				$scope.upOut = function(inpNum){
-					calcFactory.updateOutput(inpNum, function(state){
-						$scope.output = state;
-					});	
+					calcFactory.updateOutput(inpNum, calcFactory.setOutputFunc);	
 				};
 				
 				$scope.getOper = function(operation){
-					calcFactory.getOperation(operation, function(state){
-						$scope.output = state;
-					});
+					calcFactory.getOperation(operation, calcFactory.setOutputFunc);
 				};
 				
 				$scope.equal = function(){
-					calcFactory.equality(function(state){
-						$scope.output = state;
-					});
+					calcFactory.equality(calcFactory.setOutputFunc);
 				};
 				
 				$scope.rstAll = function(){
-					calcFactory.resetAll(function(state){
-						$scope.output = state;
-					});
+					calcFactory.resetAll(calcFactory.setOutputFunc);
 				};
 				
 				$scope.rndOper1 = function(){
 					window.setTimeout(function(){
 						$scope.$apply(function(){
-							calcFactory.getRandomOperation(function(state){								
-								$scope.output = state[0];
-								$scope.lastNumber = state[1];
-								$scope.operationInfo = state[2];
-							});	
+							calcFactory.getRandomOperation(calcFactory.setOutputFunc);	
 						})
 					}, Math.floor(Math.random() * 5000));
 				};
@@ -94,11 +86,7 @@ define(function(){
 				$scope.rndOper2 = function(){
 					$timeout(function(){
 						if (count == 0){					
-							calcFactory.getRandomOperation(function(state){
-								$scope.output = state[0];
-								$scope.lastNumber = state[1];
-								$scope.operationInfo = state[2];
-							});		
+							calcFactory.getRandomOperation(calcFactory.setOutputFunc);		
 						}
 					}, Math.floor(Math.random() * 5000));	
 					count = 0;
@@ -113,11 +101,7 @@ define(function(){
 					
 					promise.then(
 						result => {
-							calcFactory.getRandomOperation(function(state){
-								$scope.output = state[0];
-								$scope.lastNumber = state[1];
-								$scope.operationInfo = state[2];
-							});	
+							calcFactory.getRandomOperation(calcFactory.setOutputFunc);	
 						},
 						error =>{
 							window.alert("Something wrong");

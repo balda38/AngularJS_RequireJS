@@ -10,6 +10,7 @@ define(function(){
 				this.lastNumber = "0";
 				this.lastOperation = null;
 				this.operationInfo = null;
+				this.setOutputFunc = null;
 				
 				this.updateOutput = function(number, callback){			
 					if (this.output == "0" || this.lastOperation == "="){
@@ -21,7 +22,7 @@ define(function(){
 						this.output += String(number);
 						this.buffer += String(number);
 					}
-					this.setData(false, callback);
+					this.setData(callback);
 				};
 				
 				this.getOperation = function(operation, callback){
@@ -48,7 +49,7 @@ define(function(){
 					}
 					this.lastNumber = parseInt(this.buffer, 10);
 					this.buffer = "0";
-					this.setData(false, callback);
+					this.setData(callback);
 				};
 				
 				this.equality = function(callback){
@@ -78,7 +79,7 @@ define(function(){
 							break;
 					}
 					this.lastOperation = "=";
-					this.setData(false, callback);
+					this.setData(callback);
 				};
 				
 				this.resetAll = function(callback){
@@ -86,7 +87,7 @@ define(function(){
 					this.buffer = "0";
 					this.lastNumber = null;
 					this.lastOperation = null;
-					this.setData(false, callback);
+					this.setData(callback);
 				};
 
 				this.getRandomOperation = function(callback){
@@ -97,17 +98,12 @@ define(function(){
 					this.buffer = Math.floor(Math.random() * 1000);
 					this.operationInfo = this.lastOperation + this.buffer;
 					this.equality(callback);
-					this.setData(true, callback);
+					this.setData(callback);
 				};
 				
-				this.setData = function(needArray, callback){
-					if (needArray){
-						var array = [this.output, this.lastNumber, this.operationInfo]
-						callback(array);
-					}
-					else{
-						callback(this.output);
-					}			
+				this.setData = function(callback){
+					var array = [this.output, this.lastNumber, this.operationInfo]
+					callback(array);			
 				};
 			};
 		};
