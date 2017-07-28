@@ -50,34 +50,34 @@ define(function(){
 				
 				var calcFactory = calculatorFactory();
 
-				calcFactory.setOutputFunc = function(state){
+				calcFactory.setOutputFuncValue(function(state){
 					$scope.output = state[0];
 					$scope.lastNumber = state[1];
 					$scope.operationInfo = state[2];
-				};
+				});				
 				
-				calcFactory.setData(calcFactory.setOutputFunc);
+				calcFactory.initData();
 				
 				$scope.upOut = function(inpNum){
-					calcFactory.updateOutput(inpNum, calcFactory.setOutputFunc);	
+					calcFactory.updateOutput(inpNum);	
 				};
 				
 				$scope.getOper = function(operation){
-					calcFactory.getOperation(operation, calcFactory.setOutputFunc);
+					calcFactory.getOperation(operation);
 				};
 				
 				$scope.equal = function(){
-					calcFactory.equality(calcFactory.setOutputFunc);
+					calcFactory.equality();
 				};
 				
 				$scope.rstAll = function(){
-					calcFactory.resetAll(calcFactory.setOutputFunc);
+					calcFactory.resetAll();
 				};
 				
 				$scope.rndOper1 = function(){
 					window.setTimeout(function(){
 						$scope.$apply(function(){
-							calcFactory.getRandomOperation(calcFactory.setOutputFunc);	
+							calcFactory.getRandomOperation();	
 						})
 					}, Math.floor(Math.random() * 5000));
 				};
@@ -86,7 +86,7 @@ define(function(){
 				$scope.rndOper2 = function(){
 					$timeout(function(){
 						if (count == 0){					
-							calcFactory.getRandomOperation(calcFactory.setOutputFunc);		
+							calcFactory.getRandomOperation();		
 						}
 					}, Math.floor(Math.random() * 5000));	
 					count = 0;
@@ -101,7 +101,7 @@ define(function(){
 					
 					promise.then(
 						result => {
-							calcFactory.getRandomOperation(calcFactory.setOutputFunc);	
+							calcFactory.getRandomOperation();	
 						},
 						error =>{
 							window.alert("Something wrong");
