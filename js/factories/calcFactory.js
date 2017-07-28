@@ -10,23 +10,14 @@ define(function(){
 				this.lastNumber = "0";
 				this.lastOperation = null;
 				this.operationInfo = null;
+				var onUpdate = function(){};
 				
-				var setOutputFunc = {
-					value: null,
-					get getValue(){
-						return this.value;
-					},
-					set setValue(val){
-						this.value = val;
-					}
-				};
-				
-				this.setOutputFuncValue = function(val){
-					setOutputFunc.setValue = val;
+				this.setOnUpdate = function(cb){
+					onUpdate = cb;
 				};								
 								
 				this.initData = function(){
-					this.setData(setOutputFunc.getValue);
+					this.setData();
 				};
 				
 				this.updateOutput = function(number){			
@@ -39,7 +30,7 @@ define(function(){
 						this.output += String(number);
 						this.buffer += String(number);
 					}
-					this.setData(setOutputFunc.getValue);
+					this.setData();
 				};
 				
 				this.getOperation = function(operation){
@@ -66,7 +57,7 @@ define(function(){
 					}
 					this.lastNumber = parseInt(this.buffer, 10);
 					this.buffer = "0";
-					this.setData(setOutputFunc.getValue);
+					this.setData();
 				};
 				
 				this.equality = function(){
@@ -96,7 +87,7 @@ define(function(){
 							break;
 					}
 					this.lastOperation = "=";
-					this.setData(setOutputFunc.getValue);
+					this.setData();
 				};
 				
 				this.resetAll = function(){
@@ -104,7 +95,7 @@ define(function(){
 					this.buffer = "0";
 					this.lastNumber = null;
 					this.lastOperation = null;
-					this.setData(setOutputFunc.getValue);
+					this.setData();
 				};
 
 				this.getRandomOperation = function(){
@@ -115,12 +106,12 @@ define(function(){
 					this.buffer = Math.floor(Math.random() * 1000);
 					this.operationInfo = this.lastOperation + this.buffer;
 					this.equality();
-					this.setData(setOutputFunc.getValue);
+					this.setData();
 				};
 				
-				this.setData = function(callback){
+				this.setData = function(){
 					var array = [this.output, this.lastNumber, this.operationInfo]
-					callback(array);			
+					onUpdate(array);			
 				};
 			};
 		};
