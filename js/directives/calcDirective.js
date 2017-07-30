@@ -50,7 +50,7 @@ define(function(){
 				
 				var calcFactory = calculatorFactory();
 
-				calcFactory.setOutputFuncValue(function(state){
+				calcFactory.setOnUpdate(function(state){
 					$scope.output = state[0];
 					$scope.lastNumber = state[1];
 					$scope.operationInfo = state[2];

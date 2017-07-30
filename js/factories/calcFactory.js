@@ -5,122 +5,113 @@ define(function(){
 		
 		return function(){
 			return new function(){
-				this.output = "0";
-				this.buffer = "0";
-				this.lastNumber = "0";
-				this.lastOperation = null;
-				this.operationInfo = null;
+				var output = "0";
+				var buffer = "0";
+				var lastNumber = "0";
+				var lastOperation = null;
+				var operationInfo = null;
+				var onUpdate = function(){};
 				
-				var setOutputFunc = {
-					value: null,
-					get getValue(){
-						return this.value;
-					},
-					set setValue(val){
-						this.value = val;
-					}
-				};
-				
-				this.setOutputFuncValue = function(val){
-					setOutputFunc.setValue = val;
+				this.setOnUpdate = function(cb){
+					onUpdate = cb;
 				};								
 								
 				this.initData = function(){
-					this.setData(setOutputFunc.getValue);
+					setData();
 				};
 				
 				this.updateOutput = function(number){			
-					if (this.output == "0" || this.lastOperation == "="){
-						this.output = number;
-						this.buffer = number;
-						this.lastOperation = null;
+					if (output == "0" || lastOperation == "="){
+						output = number;
+						buffer = number;
+						lastOperation = null;
 					}
 					else {
-						this.output += String(number);
-						this.buffer += String(number);
+						output += String(number);
+						buffer += String(number);
 					}
-					this.setData(setOutputFunc.getValue);
+					setData();
 				};
 				
 				this.getOperation = function(operation){
 					this.equality();
 					switch(operation){
 						case '+':
-							this.output += "+";
-							this.lastOperation = "+";
+							output += "+";
+							lastOperation = "+";
 							break;
 						case '-':
-							this.output += "-";
-							this.lastOperation = "-";
+							output += "-";
+							lastOperation = "-";
 							break;
 						case '*':
-							this.output += "*";
-							this.lastOperation = "*";
+							output += "*";
+							lastOperation = "*";
 							break;
 						case '/':
-							this.output += "/";
-							this.lastOperation = "/";
+							output += "/";
+							lastOperation = "/";
 							break;
 						default:
 							break;
 					}
-					this.lastNumber = parseInt(this.buffer, 10);
-					this.buffer = "0";
-					this.setData(setOutputFunc.getValue);
+					lastNumber = parseInt(buffer, 10);
+					buffer = "0";
+					setData();
 				};
 				
 				this.equality = function(){
-					switch(this.lastOperation){
+					switch(lastOperation){
 						case '+':
-							this.output = parseInt(this.lastNumber, 10) + parseInt(this.buffer, 10);
-							this.buffer = parseInt(this.lastNumber, 10) + parseInt(this.buffer, 10);
+							output = parseInt(lastNumber, 10) + parseInt(buffer, 10);
+							buffer = parseInt(lastNumber, 10) + parseInt(buffer, 10);
 							break;
 						case '-':
-							this.output = parseInt(this.lastNumber, 10) - parseInt(this.buffer, 10);
-							this.buffer = parseInt(this.lastNumber, 10) - parseInt(this.buffer, 10);
+							output = parseInt(lastNumber, 10) - parseInt(buffer, 10);
+							buffer = parseInt(lastNumber, 10) - parseInt(buffer, 10);
 							break;
 						case '*':
-							this.output = parseInt(this.lastNumber, 10) * parseInt(this.buffer, 10);
-							this.buffer = parseInt(this.lastNumber, 10) * parseInt(this.buffer, 10);
+							output = parseInt(lastNumber, 10) * parseInt(buffer, 10);
+							buffer = parseInt(lastNumber, 10) * parseInt(buffer, 10);
 							break;
 						case '/':
-							if (parseInt(this.buffer, 10) == 0){
+							if (parseInt(buffer, 10) == 0){
 								window.alert("Деление на ноль невозможно!");
 							}
 							else {
-								this.output = parseInt(this.lastNumber, 10) / parseInt(this.buffer, 10);
-								this.buffer = parseInt(this.lastNumber, 10) / parseInt(this.buffer, 10);
+								output = parseInt(lastNumber, 10) / parseInt(buffer, 10);
+								buffer = parseInt(lastNumber, 10) / parseInt(buffer, 10);
 							}
 							break;
 						default:
 							break;
 					}
-					this.lastOperation = "=";
-					this.setData(setOutputFunc.getValue);
+					lastOperation = "=";
+					setData();
 				};
 				
 				this.resetAll = function(){
-					this.output = "0";
-					this.buffer = "0";
-					this.lastNumber = null;
-					this.lastOperation = null;
-					this.setData(setOutputFunc.getValue);
+					output = "0";
+					buffer = "0";
+					lastNumber = null;
+					lastOperation = null;
+					setData();
 				};
 
 				this.getRandomOperation = function(){
 					this.equality();
 					var operations = ["+", "-", "*", "/"];
-					this.lastOperation = operations[Math.floor(Math.random() * operations.length)];
-					this.lastNumber = this.buffer;
-					this.buffer = Math.floor(Math.random() * 1000);
-					this.operationInfo = this.lastOperation + this.buffer;
+					lastOperation = operations[Math.floor(Math.random() * operations.length)];
+					lastNumber = buffer;
+					buffer = Math.floor(Math.random() * 1000);
+					operationInfo = lastOperation + buffer;
 					this.equality();
-					this.setData(setOutputFunc.getValue);
+					setData();
 				};
 				
-				this.setData = function(callback){
-					var array = [this.output, this.lastNumber, this.operationInfo]
-					callback(array);			
+				function setData(){
+					var array = [output, lastNumber, operationInfo]
+					onUpdate(array);			
 				};
 			};
 		};
