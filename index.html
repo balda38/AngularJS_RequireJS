@@ -2,46 +2,20 @@
 <html>
 <head>
 <meta charset="utf-8">
-<link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css">
+<link rel="stylesheet" href="bower_components/bootstrap/dist/css/bootstrap.min.css">
 <link rel="stylesheet" href="css/style.css" type="text/css">
 </head>
-<body data-ng-controller="calculatorController">
+<body>
 	<div class="page-header">
 		<h1>Калькулятор</h1>
-	</div>
-	
-	<div class="panel">
-		<div class="col-md-4">
-			<div class="form-inline">
-				<p name="output" class="resultWindow" style="width:170px">{{output}}<br><br></p>				
-			</div>
-			<div class="form-inline">
-				<button class="btn btn-default" ng-click="updateOutput(7)" value="7" style="width:40px">7</button>
-				<button class="btn btn-default" ng-click="updateOutput(8)" value="8" style="width:40px">8</button>
-				<button class="btn btn-default" ng-click="updateOutput(9)" value="9" style="width:40px">9</button>
-				<button class="btn btn-default" ng-click="addition()" value="+" style="width:40px">+</button>
-			</div>
-			<div class="form-inline">
-				<button class="btn btn-default" ng-click="updateOutput(4)" value="4" style="width:40px">4</button>
-				<button class="btn btn-default" ng-click="updateOutput(5)" value="5" style="width:40px">5</button>
-				<button class="btn btn-default" ng-click="updateOutput(6)" value="6" style="width:40px">6</button>
-				<button class="btn btn-default" ng-click="substraction()" value="-" style="width:40px">-</button>
-			</div>
-			<div class="form-inline">
-				<button class="btn btn-default" ng-click="updateOutput(1)" value="1" style="width:40px">1</button>
-				<button class="btn btn-default" ng-click="updateOutput(2)" value="2" style="width:40px">2</button>
-				<button class="btn btn-default" ng-click="updateOutput(3)" value="3" style="width:40px">3</button>
-				<button class="btn btn-default" ng-click="multiplication()" value="*" style="width:40px">*</button>
-			</div>
-			<div class="form-inline">
-				<button class="btn btn-default" ng-click="updateOutput(0)" value="0" style="width:40px">0</button>
-				<button class="btn btn-default" ng-click="reset()" value="C" style="width:40px">C</button>
-				<button class="btn btn-default" ng-click="equality()" value="=" style="width:40px">=</button>
-				<button class="btn btn-default" ng-click="segmentation()" value="/" style="width:40px">/</button>
-			</div>
-		</div>
-	</div>
-	
-<script src="js/require.js" data-main="app/main"></script>	
+	</div>	
+	<div ng-app="calculatorApp">
+		<calculator-directive></calculator-directive>
+		
+		<calculator-directive></calculator-directive>
+		
+		<calculator-directive></calculator-directive>
+	</div>	
+<script src="bower_components/requirejs/require.js" data-main="js/main"></script>	
 </body>
 </html>
