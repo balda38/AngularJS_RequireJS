@@ -5,12 +5,47 @@ define(function(){
 		
 		return function(){
 			return new function(){
+				var Equalitier = function(strategy){
+					this.strategy = strategy;
+				};
+				
+				Equalitier.prototype.equality = function(){
+					return this.strategy;
+				};
+				
+				var additionStrategy = function(){
+					output = parseInt(lastNumber, 10) + parseInt(buffer, 10);
+					buffer = parseInt(lastNumber, 10) + parseInt(buffer, 10);
+				};
+				
+				var differenceStrategy = function(){
+					output = parseInt(lastNumber, 10) - parseInt(buffer, 10);
+					buffer = parseInt(lastNumber, 10) - parseInt(buffer, 10);
+				};
+				
+				var multiplicationStrategy = function(){
+					output = parseInt(lastNumber, 10) * parseInt(buffer, 10);
+					buffer = parseInt(lastNumber, 10) * parseInt(buffer, 10);
+				};
+				
+				var segmentationStrategy = function(){
+					if (parseInt(buffer, 10) == 0){
+						window.alert("Деление на ноль невозможно!");
+					}
+					else {
+						output = parseInt(lastNumber, 10) / parseInt(buffer, 10);
+						buffer = parseInt(lastNumber, 10) / parseInt(buffer, 10);
+					}
+				};	
+				
+				var strategies = [additionStrategy, differenceStrategy, multiplicationStrategy, segmentationStrategy];
 				
 				var output = "0";
 				var buffer = "0";
 				var lastNumber = "0";
 				var lastOperation = null;
-				var operationInfo = null;
+				var operationInfo = null;		
+				var operationIndex = 4;
 				
 				var onUpdate = function(){};
 				
@@ -41,18 +76,22 @@ define(function(){
 						case '+':
 							output += "+";
 							lastOperation = "+";
+							operationIndex = 0;
 							break;
 						case '-':
 							output += "-";
 							lastOperation = "-";
+							operationIndex = 1;
 							break;
 						case '*':
 							output += "*";
 							lastOperation = "*";
+							operationIndex = 2;
 							break;
 						case '/':
 							output += "/";
 							lastOperation = "/";
+							operationIndex = 3;
 							break;
 						default:
 							break;
@@ -63,31 +102,15 @@ define(function(){
 				};
 				
 				this.equality = function(){
-					switch(lastOperation){
-						case '+':
-							output = parseInt(lastNumber, 10) + parseInt(buffer, 10);
-							buffer = parseInt(lastNumber, 10) + parseInt(buffer, 10);
-							break;
-						case '-':
-							output = parseInt(lastNumber, 10) - parseInt(buffer, 10);
-							buffer = parseInt(lastNumber, 10) - parseInt(buffer, 10);
-							break;
-						case '*':
-							output = parseInt(lastNumber, 10) * parseInt(buffer, 10);
-							buffer = parseInt(lastNumber, 10) * parseInt(buffer, 10);
-							break;
-						case '/':
-							if (parseInt(buffer, 10) == 0){
-								window.alert("Деление на ноль невозможно!");
-							}
-							else {
-								output = parseInt(lastNumber, 10) / parseInt(buffer, 10);
-								buffer = parseInt(lastNumber, 10) / parseInt(buffer, 10);
-							}
-							break;
-						default:
-							break;
+					if (operationIndex != 4)
+					{
+						var strategy = new strategies[operationIndex];
+						console.log(strategy);
+						var equalityOperation = new Equalitier(strategy);
+						console.log(equalityOperation);
+						equalityOperation.equality();
 					}
+					operationIndex = 4;
 					lastOperation = "=";
 					setData();
 				};
@@ -111,7 +134,8 @@ define(function(){
 				this.getRandomOperation = function(){
 					this.equality();
 					var operations = ["+", "-", "*", "/"];
-					lastOperation = operations[Math.floor(Math.random() * operations.length)];
+					operationIndex = Math.floor(Math.random() * operations.length);
+					lastOperation = operations[operationIndex];
 					lastNumber = buffer;
 					buffer = Math.floor(Math.random() * 1000);
 					operationInfo = lastOperation + buffer;
@@ -122,7 +146,7 @@ define(function(){
 				function setData(){
 					var array = [output, lastNumber, operationInfo]
 					onUpdate(array);
-				};				
+				};			
 			};
 		};
 	}]);
