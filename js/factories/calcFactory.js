@@ -4,31 +4,36 @@ define(function(){
 	factoryModule.factory('calculatorFactory', ['$injector', function($injector){		
 		
 		return function(){
-			return new function(){
-				var Equalitier = function(strategy){
-					this.strategy = strategy;
+			return new function(){				
+				var EqualStrategies = new function(){	
+					var operationSymbols = [];
+					var operations = [];					
+					
+					this.add = function(operationSymbol, operation){						
+						operationSymbols.push(operationSymbol);
+						operations.push(operation);
+					};
+					this.getValue = function(operationSymbol){
+						return operations[operationSymbols.indexOf(operationSymbol)];
+					};
 				};
 				
-				Equalitier.prototype.equality = function(){
-					return this.strategy;
-				};
-				
-				var additionStrategy = function(){
+				EqualStrategies.add("+", function(){
 					output = parseInt(lastNumber, 10) + parseInt(buffer, 10);
 					buffer = parseInt(lastNumber, 10) + parseInt(buffer, 10);
-				};
+				});
 				
-				var differenceStrategy = function(){
+				EqualStrategies.add("-", function(){
 					output = parseInt(lastNumber, 10) - parseInt(buffer, 10);
 					buffer = parseInt(lastNumber, 10) - parseInt(buffer, 10);
-				};
+				});
 				
-				var multiplicationStrategy = function(){
+				EqualStrategies.add("*", function(){
 					output = parseInt(lastNumber, 10) * parseInt(buffer, 10);
 					buffer = parseInt(lastNumber, 10) * parseInt(buffer, 10);
-				};
+				});
 				
-				var segmentationStrategy = function(){
+				EqualStrategies.add("/", function(){
 					if (parseInt(buffer, 10) == 0){
 						window.alert("Деление на ноль невозможно!");
 					}
@@ -36,9 +41,44 @@ define(function(){
 						output = parseInt(lastNumber, 10) / parseInt(buffer, 10);
 						buffer = parseInt(lastNumber, 10) / parseInt(buffer, 10);
 					}
-				};	
+				});
 				
-				var strategies = [additionStrategy, differenceStrategy, multiplicationStrategy, segmentationStrategy];
+				var OperationStrategies = new function(){
+					var operationSymbols = [];
+					var operations = [];					
+					
+					this.add = function(operationSymbol, operation){						
+						operationSymbols.push(operationSymbol);
+						operations.push(operation);
+					};
+					this.getValue = function(operationSymbol){
+						return operations[operationSymbols.indexOf(operationSymbol)];
+					};
+				};
+				
+				OperationStrategies.add("+", function(){
+					output += "+";
+					lastOperation = "+";
+					operationIndex = 0;
+				});
+				
+				OperationStrategies.add("-", function(){
+					output += "-";
+					lastOperation = "-";
+					operationIndex = 1;
+				});
+				
+				OperationStrategies.add("*", function(){
+					output += "*";
+					lastOperation = "*";
+					operationIndex = 2;
+				});
+				
+				OperationStrategies.add("/", function(){
+					output += "/";
+					lastOperation = "/";
+					operationIndex = 3;
+				});
 				
 				var output = "0";
 				var buffer = "0";
@@ -72,44 +112,19 @@ define(function(){
 				
 				this.getOperation = function(operation){
 					this.equality();
-					switch(operation){
-						case '+':
-							output += "+";
-							lastOperation = "+";
-							operationIndex = 0;
-							break;
-						case '-':
-							output += "-";
-							lastOperation = "-";
-							operationIndex = 1;
-							break;
-						case '*':
-							output += "*";
-							lastOperation = "*";
-							operationIndex = 2;
-							break;
-						case '/':
-							output += "/";
-							lastOperation = "/";
-							operationIndex = 3;
-							break;
-						default:
-							break;
-					}
+					var strategy = OperationStrategies.getValue(operation);
+					strategy();
 					lastNumber = parseInt(buffer, 10);
 					buffer = "0";
 					setData();
 				};
 				
-				this.equality = function(){
+				this.equality = function(){	
 					if (operationIndex != 4)
 					{
-						var strategy = new strategies[operationIndex];
-						console.log(strategy);
-						var equalityOperation = new Equalitier(strategy);
-						console.log(equalityOperation);
-						equalityOperation.equality();
-					}
+						var strategy = EqualStrategies.getValue(lastOperation);
+						strategy();
+					};
 					operationIndex = 4;
 					lastOperation = "=";
 					setData();
