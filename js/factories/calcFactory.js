@@ -6,15 +6,13 @@ define(function(){
 		return function(){
 			return new function(){				
 				var equalStrategies = new function(){	
-					var operationSymbols = [];
-					var operations = [];					
+					var operations = {};					
 					
 					this.add = function(operationSymbol, operation){						
-						operationSymbols.push(operationSymbol);
-						operations.push(operation);
+						operations[operationSymbol] = operation;
 					};
 					this.getValue = function(operationSymbol){
-						return operations[operationSymbols.indexOf(operationSymbol)];
+						return operations[operationSymbol];
 					};
 				};
 				
@@ -41,40 +39,7 @@ define(function(){
 						output = parseInt(lastNumber, 10) / parseInt(buffer, 10);
 						buffer = parseInt(lastNumber, 10) / parseInt(buffer, 10);
 					}
-				});
-				
-				var OperationStrategies = new function(){
-					var operationSymbols = [];
-					var operations = [];					
-					
-					this.add = function(operationSymbol, operation){						
-						operationSymbols.push(operationSymbol);
-						operations.push(operation);
-					};
-					this.getValue = function(operationSymbol){
-						return operations[operationSymbols.indexOf(operationSymbol)];
-					};
-				};
-				
-				OperationStrategies.add("+", function(){
-					output += "+";
-					lastOperation = "+";
-				});
-				
-				OperationStrategies.add("-", function(){
-					output += "-";
-					lastOperation = "-";
-				});
-				
-				OperationStrategies.add("*", function(){
-					output += "*";
-					lastOperation = "*";
-				});
-				
-				OperationStrategies.add("/", function(){
-					output += "/";
-					lastOperation = "/";
-				});
+				});				
 				
 				var output = "0";
 				var buffer = "0";
@@ -107,17 +72,16 @@ define(function(){
 				
 				this.getOperation = function(operation){
 					this.equality();
-					var strategy = OperationStrategies.getValue(operation);
-					strategy();
+					output += operation;
+					lastOperation = operation;
 					lastNumber = parseInt(buffer, 10);
 					buffer = "0";
 					setData();
 				};
 				
 				this.equality = function(){	
-					if (lastOperation != null)
-					{
-						var strategy = equalStrategies.getValue(lastOperation);
+					var strategy = equalStrategies.getValue(lastOperation);
+					if(strategy){
 						strategy();
 					};
 					lastOperation = null;

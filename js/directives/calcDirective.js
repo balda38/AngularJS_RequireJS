@@ -81,15 +81,13 @@ define(function(){
 				};
 				
 				var rndStrategies = new function(){	
-					var operationIndexes = [];
 					var operations = [];					
 					
 					this.add = function(operationIndex, operation){						
-						operationIndexes.push(operationIndex);
-						operations.push(operation);
+						operations[operationIndex] = operation;
 					};
 					this.getValue = function(operationIndex){
-						return operations[operationIndexes.indexOf(operationIndex)];
+						return operations[operationIndex];
 					};
 				};
 				
