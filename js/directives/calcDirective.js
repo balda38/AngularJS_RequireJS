@@ -37,9 +37,9 @@ define(function(){
 				"</div>"+
 				"<div class='col-md-2'>"+
 					"<div class='form-inline'>"+
-						"<button class='btn btn-default' ng-click='RndStrategies.get(0)' value='random' style='width:200px; text-align:center'>Зарандомить (setTimeout)! :)</button>"+
-						"<button class='btn btn-default' ng-click='RndStrategies.get(1)' value='random' style='width:200px; text-align:left'>Зарандомить ($timeout)! :)</button>"+
-						"<button class='btn btn-default' ng-click='RndStrategies.get(2)' value='random' style='width:200px; text-align:left'>Зарандомить (Promise)! :)</button>"+
+						"<button class='btn btn-default' ng-click='getRandom(0)' value='random' style='width:200px; text-align:center'>Зарандомить (setTimeout)! :)</button>"+
+						"<button class='btn btn-default' ng-click='getRandom(1)' value='random' style='width:200px; text-align:left'>Зарандомить ($timeout)! :)</button>"+
+						"<button class='btn btn-default' ng-click='getRandom(2)' value='random' style='width:200px; text-align:left'>Зарандомить (Promise)! :)</button>"+
 					"</div>"+
 					"<div class='form-inline'>"+
 						"<p name='information'>С числом {{lastNumber || 0}} была произведена операция: {{operationInfo}}</p>"+
@@ -74,19 +74,26 @@ define(function(){
 					calcFactory.resetAll();
 				};
 				
-				$scope.RndStrategies = new function(){
-					var methods = [];
+				$scope.getRandom = function(rndIndex){
+					var strategy = rndStrategies.getValue(rndIndex);
+					console.log(strategy);
+					strategy();
+				};
+				
+				var rndStrategies = new function(){	
+					var operationIndexes = [];
+					var operations = [];					
 					
-					this.add = function(operation){
-						methods.push(operation);
+					this.add = function(operationIndex, operation){						
+						operationIndexes.push(operationIndex);
+						operations.push(operation);
 					};
-					this.get = function(index){
-						var strategy = methods[index];
-						strategy();
+					this.getValue = function(operationIndex){
+						return operations[operationIndexes.indexOf(operationIndex)];
 					};
 				};
 				
-				$scope.RndStrategies.add(function(){
+				rndStrategies.add(0, function(){
 					window.setTimeout(function(){
 						$scope.$apply(function(){
 							calcFactory.getRandomOperation();	
@@ -95,7 +102,7 @@ define(function(){
 				});
 				
 				var count = 0;
-				$scope.RndStrategies.add(function(){
+				rndStrategies.add(1, function(){
 					$timeout(function(){
 						if (count == 0){					
 							calcFactory.getRandomOperation();		
@@ -104,7 +111,7 @@ define(function(){
 					count = 0;
 				});
 				
-				$scope.RndStrategies.add(function(){
+				rndStrategies.add(2, function(){
 					var promise = $q(function(resolve, reject){
 						$timeout(function(){
 							resolve("result");

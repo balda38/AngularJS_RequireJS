@@ -5,34 +5,35 @@ define(function(){
 		
 		return function(){
 			return new function(){				
-				var EqualStrategies = new function(){	
+				var equalStrategies = new function(){	
+					var operationSymbols = [];
 					var operations = [];					
 					
-					this.add = function(operation){						
+					this.add = function(operationSymbol, operation){						
+						operationSymbols.push(operationSymbol);
 						operations.push(operation);
 					};
-					this.getValue = function(){
-						var strategy = operations[operationIndex];
-						strategy();
+					this.getValue = function(operationSymbol){
+						return operations[operationSymbols.indexOf(operationSymbol)];
 					};
 				};
 				
-				EqualStrategies.add(function(){
+				equalStrategies.add("+", function(){
 					output = parseInt(lastNumber, 10) + parseInt(buffer, 10);
 					buffer = parseInt(lastNumber, 10) + parseInt(buffer, 10);
 				});
 				
-				EqualStrategies.add(function(){
+				equalStrategies.add("-", function(){
 					output = parseInt(lastNumber, 10) - parseInt(buffer, 10);
 					buffer = parseInt(lastNumber, 10) - parseInt(buffer, 10);
 				});
 				
-				EqualStrategies.add(function(){
+				equalStrategies.add("*", function(){
 					output = parseInt(lastNumber, 10) * parseInt(buffer, 10);
 					buffer = parseInt(lastNumber, 10) * parseInt(buffer, 10);
 				});
 				
-				EqualStrategies.add(function(){
+				equalStrategies.add("/", function(){
 					if (parseInt(buffer, 10) == 0){
 						window.alert("Деление на ноль невозможно!");
 					}
@@ -41,7 +42,7 @@ define(function(){
 						buffer = parseInt(lastNumber, 10) / parseInt(buffer, 10);
 					}
 				});
-
+				
 				var OperationStrategies = new function(){
 					var operationSymbols = [];
 					var operations = [];					
@@ -51,33 +52,28 @@ define(function(){
 						operations.push(operation);
 					};
 					this.getValue = function(operationSymbol){
-						var strategy = operations[operationSymbols.indexOf(operationSymbol)];
-						strategy();
+						return operations[operationSymbols.indexOf(operationSymbol)];
 					};
 				};
 				
 				OperationStrategies.add("+", function(){
 					output += "+";
 					lastOperation = "+";
-					operationIndex = 0;
 				});
 				
 				OperationStrategies.add("-", function(){
 					output += "-";
 					lastOperation = "-";
-					operationIndex = 1;
 				});
 				
 				OperationStrategies.add("*", function(){
 					output += "*";
 					lastOperation = "*";
-					operationIndex = 2;
 				});
 				
 				OperationStrategies.add("/", function(){
 					output += "/";
 					lastOperation = "/";
-					operationIndex = 3;
 				});
 				
 				var output = "0";
@@ -85,7 +81,6 @@ define(function(){
 				var lastNumber = "0";
 				var lastOperation = null;
 				var operationInfo = null;		
-				var operationIndex = 4;
 				
 				var onUpdate = function(){};
 				
@@ -112,19 +107,20 @@ define(function(){
 				
 				this.getOperation = function(operation){
 					this.equality();
-					OperationStrategies.getValue(operation);
+					var strategy = OperationStrategies.getValue(operation);
+					strategy();
 					lastNumber = parseInt(buffer, 10);
 					buffer = "0";
 					setData();
 				};
 				
 				this.equality = function(){	
-					if (operationIndex != 4)
+					if (lastOperation != null)
 					{
-						EqualStrategies.getValue();						
+						var strategy = equalStrategies.getValue(lastOperation);
+						strategy();
 					};
-					operationIndex = 4;
-					lastOperation = "=";
+					lastOperation = null;
 					setData();
 				};
 				
@@ -139,7 +135,6 @@ define(function(){
 				this.resetAll = function(){
 					output = "0";
 					buffer = "0";
-					operationIndex = 4;
 					lastNumber = null;
 					lastOperation = null;
 					setData();
