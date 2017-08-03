@@ -6,34 +6,32 @@ define(function(){
 		return function(){
 			return new function(){				
 				var EqualStrategies = new function(){	
-					var operationSymbols = [];
 					var operations = [];					
 					
-					this.add = function(operationSymbol, operation){						
-						operationSymbols.push(operationSymbol);
+					this.add = function(operation){						
 						operations.push(operation);
 					};
-					this.getValue = function(operationSymbol){
-						return operations[operationSymbols.indexOf(operationSymbol)];
+					this.getValue = function(){
+						return operations[operationIndex];
 					};
 				};
 				
-				EqualStrategies.add("+", function(){
+				EqualStrategies.add(function(){
 					output = parseInt(lastNumber, 10) + parseInt(buffer, 10);
 					buffer = parseInt(lastNumber, 10) + parseInt(buffer, 10);
 				});
 				
-				EqualStrategies.add("-", function(){
+				EqualStrategies.add(function(){
 					output = parseInt(lastNumber, 10) - parseInt(buffer, 10);
 					buffer = parseInt(lastNumber, 10) - parseInt(buffer, 10);
 				});
 				
-				EqualStrategies.add("*", function(){
+				EqualStrategies.add(function(){
 					output = parseInt(lastNumber, 10) * parseInt(buffer, 10);
 					buffer = parseInt(lastNumber, 10) * parseInt(buffer, 10);
 				});
 				
-				EqualStrategies.add("/", function(){
+				EqualStrategies.add(function(){
 					if (parseInt(buffer, 10) == 0){
 						window.alert("Деление на ноль невозможно!");
 					}
