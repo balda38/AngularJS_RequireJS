@@ -120,7 +120,7 @@ define(function(){
 				this.equality = function(){	
 					if (operationIndex != 4)
 					{
-						var strategy = EqualStrategies.getValue(lastOperation);
+						var strategy = EqualStrategies.getValue();
 						strategy();
 					};
 					operationIndex = 4;
@@ -139,6 +139,7 @@ define(function(){
 				this.resetAll = function(){
 					output = "0";
 					buffer = "0";
+					operationIndex = 4;
 					lastNumber = null;
 					lastOperation = null;
 					setData();
