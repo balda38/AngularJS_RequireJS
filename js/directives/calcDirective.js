@@ -37,9 +37,9 @@ define(function(){
 				"</div>"+
 				"<div class='col-md-2'>"+
 					"<div class='form-inline'>"+
-						"<button class='btn btn-default' ng-click='rndOper1()' value='random' style='width:200px; text-align:center'>Зарандомить (setTimeout)! :)</button>"+
-						"<button class='btn btn-default' ng-click='rndOper2()' value='random' style='width:200px; text-align:left'>Зарандомить ($timeout)! :)</button>"+
-						"<button class='btn btn-default' ng-click='rndOper3()' value='random' style='width:200px; text-align:left'>Зарандомить (Promise)! :)</button>"+
+						"<button class='btn btn-default' ng-click='RndStrategies.get(0)' value='random' style='width:200px; text-align:center'>Зарандомить (setTimeout)! :)</button>"+
+						"<button class='btn btn-default' ng-click='RndStrategies.get(1)' value='random' style='width:200px; text-align:left'>Зарандомить ($timeout)! :)</button>"+
+						"<button class='btn btn-default' ng-click='RndStrategies.get(2)' value='random' style='width:200px; text-align:left'>Зарандомить (Promise)! :)</button>"+
 					"</div>"+
 					"<div class='form-inline'>"+
 						"<p name='information'>С числом {{lastNumber || 0}} была произведена операция: {{operationInfo}}</p>"+
@@ -74,25 +74,37 @@ define(function(){
 					calcFactory.resetAll();
 				};
 				
-				$scope.rndOper1 = function(){
+				$scope.RndStrategies = new function(){
+					var methods = [];
+					
+					this.add = function(operation){
+						methods.push(operation);
+					};
+					this.get = function(index){
+						var strategy = methods[index];
+						strategy();
+					};
+				};
+				
+				$scope.RndStrategies.add(function(){
 					window.setTimeout(function(){
 						$scope.$apply(function(){
 							calcFactory.getRandomOperation();	
 						})
 					}, Math.floor(Math.random() * 5000));
-				};
+				});
 				
 				var count = 0;
-				$scope.rndOper2 = function(){
+				$scope.RndStrategies.add(function(){
 					$timeout(function(){
 						if (count == 0){					
 							calcFactory.getRandomOperation();		
 						}
 					}, Math.floor(Math.random() * 5000));	
 					count = 0;
-				};
+				});
 				
-				$scope.rndOper3 = function(){
+				$scope.RndStrategies.add(function(){
 					var promise = $q(function(resolve, reject){
 						$timeout(function(){
 							resolve("result");
@@ -109,7 +121,7 @@ define(function(){
 					);
 					
 					return promise;
-				};	
+				});	
 			},
 			link: function (scope, element, attrs) {					
 			}	

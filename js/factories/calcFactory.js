@@ -12,7 +12,8 @@ define(function(){
 						operations.push(operation);
 					};
 					this.getValue = function(){
-						return operations[operationIndex];
+						var strategy = operations[operationIndex];
+						strategy();
 					};
 				};
 				
@@ -40,7 +41,7 @@ define(function(){
 						buffer = parseInt(lastNumber, 10) / parseInt(buffer, 10);
 					}
 				});
-				
+
 				var OperationStrategies = new function(){
 					var operationSymbols = [];
 					var operations = [];					
@@ -50,7 +51,8 @@ define(function(){
 						operations.push(operation);
 					};
 					this.getValue = function(operationSymbol){
-						return operations[operationSymbols.indexOf(operationSymbol)];
+						var strategy = operations[operationSymbols.indexOf(operationSymbol)];
+						strategy();
 					};
 				};
 				
@@ -110,8 +112,7 @@ define(function(){
 				
 				this.getOperation = function(operation){
 					this.equality();
-					var strategy = OperationStrategies.getValue(operation);
-					strategy();
+					OperationStrategies.getValue(operation);
 					lastNumber = parseInt(buffer, 10);
 					buffer = "0";
 					setData();
@@ -120,8 +121,7 @@ define(function(){
 				this.equality = function(){	
 					if (operationIndex != 4)
 					{
-						var strategy = EqualStrategies.getValue();
-						strategy();
+						EqualStrategies.getValue();						
 					};
 					operationIndex = 4;
 					lastOperation = "=";
