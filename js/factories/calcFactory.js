@@ -49,11 +49,9 @@ define(function(){
 					setData();
 				};
 				
-				var clone = {};
+				var clone = null;
 				this.eqData = function(params){
-					for (var key in params){
-						clone[key] = params[key];
-					}					
+					clone = params;					
 				};
 				
 				this.equality = function(){						
