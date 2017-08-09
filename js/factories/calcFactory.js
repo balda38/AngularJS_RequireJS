@@ -1,46 +1,11 @@
+'use strict';
 define(function(){
 	var factoryModule = angular.module('calcFactory', []);
 	
 	factoryModule.factory('calculatorFactory', ['$injector', function($injector){		
 		
 		return function(){
-			return new function(){				
-				var equalStrategies = new function(){	
-					var operations = {};					
-					
-					this.add = function(operationSymbol, operation){						
-						operations[operationSymbol] = operation;
-					};
-					this.getValue = function(operationSymbol){
-						return operations[operationSymbol];
-					};
-				};
-				
-				equalStrategies.add("+", function(){
-					output = parseInt(lastNumber, 10) + parseInt(buffer, 10);
-					buffer = parseInt(lastNumber, 10) + parseInt(buffer, 10);
-				});
-				
-				equalStrategies.add("-", function(){
-					output = parseInt(lastNumber, 10) - parseInt(buffer, 10);
-					buffer = parseInt(lastNumber, 10) - parseInt(buffer, 10);
-				});
-				
-				equalStrategies.add("*", function(){
-					output = parseInt(lastNumber, 10) * parseInt(buffer, 10);
-					buffer = parseInt(lastNumber, 10) * parseInt(buffer, 10);
-				});
-				
-				equalStrategies.add("/", function(){
-					if (parseInt(buffer, 10) == 0){
-						window.alert("Деление на ноль невозможно!");
-					}
-					else {
-						output = parseInt(lastNumber, 10) / parseInt(buffer, 10);
-						buffer = parseInt(lastNumber, 10) / parseInt(buffer, 10);
-					}
-				});				
-				
+			return new function(){					
 				var output = "0";
 				var buffer = "0";
 				var lastNumber = "0";
@@ -48,10 +13,15 @@ define(function(){
 				var operationInfo = null;		
 				
 				var onUpdate = function(){};
+				var paramsUpdate = function(){};
 				
 				this.setOnUpdate = function(cb){
 					onUpdate = cb;
-				};								
+				};		
+
+				this.setParams = function(cb){
+					paramsUpdate = cb;
+				};
 								
 				this.initData = function(){
 					setData();
@@ -79,13 +49,25 @@ define(function(){
 					setData();
 				};
 				
-				this.equality = function(){	
-					var strategy = equalStrategies.getValue(lastOperation);
-					if(strategy){
-						strategy();
-					};
-					lastOperation = null;
+				var clone = {};
+				this.eqData = function(params){
+					for (var key in params){
+						clone[key] = params[key];
+					}					
+				};
+				
+				this.equality = function(){						
+					setParams();
+					output = clone.output;
+					buffer = clone.buffer;
+					lastNumber = clone.lastNumber;
+					lastOperation = null;					
 					setData();
+				};
+				
+				function setParams(){
+					var array = [output, buffer, lastNumber, lastOperation];
+					paramsUpdate(array);
 				};
 				
 				this.resetAll = function(){
@@ -107,7 +89,7 @@ define(function(){
 				this.getRandomOperation = function(){
 					this.equality();
 					var operations = ["+", "-", "*", "/"];
-					operationIndex = Math.floor(Math.random() * operations.length);
+					var operationIndex = Math.floor(Math.random() * operations.length);
 					lastOperation = operations[operationIndex];
 					lastNumber = buffer;
 					buffer = Math.floor(Math.random() * 1000);

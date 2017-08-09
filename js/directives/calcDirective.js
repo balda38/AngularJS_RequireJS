@@ -1,3 +1,4 @@
+'use strict';
 define(function(){
 	var directiveModule = angular.module('calcDirective', []);	
 
@@ -66,7 +67,60 @@ define(function(){
 					calcFactory.getOperation(operation);
 				};
 				
-				$scope.equal = function(){
+				var equalStrategies = new function(){	
+					var operations = {};					
+					
+					this.add = function(operationSymbol, operation){						
+						operations[operationSymbol] = operation;
+					};
+					this.getValue = function(operationSymbol){						
+						return operations[operationSymbol];
+					};
+				};
+				
+				var params = {
+					output: "0",
+					buffer: "0",
+					lastNumber: "0"
+				};
+				
+				equalStrategies.add("+", function(){
+					params.output = parseInt(params.lastNumber, 10) + parseInt(params.buffer, 10);
+					params.buffer = parseInt(params.lastNumber, 10) + parseInt(params.buffer, 10);				
+				});
+				
+				equalStrategies.add("-", function(){
+					params.output = parseInt(params.lastNumber, 10) - parseInt(params.buffer, 10);
+					params.buffer = parseInt(params.lastNumber, 10) - parseInt(params.buffer, 10);				
+				});
+				
+				equalStrategies.add("*", function(){
+					params.output = parseInt(params.lastNumber, 10) * parseInt(params.buffer, 10);
+					params.buffer = parseInt(params.lastNumber, 10) * parseInt(params.buffer, 10);				
+				});
+				
+				equalStrategies.add("/", function(){
+					if (parseInt(params.buffer, 10) == 0){
+						window.alert("Деление на ноль невозможно!");
+					}
+					else {
+						params.output = parseInt(params.lastNumber, 10) / parseInt(params.buffer, 10);
+						params.buffer = parseInt(params.lastNumber, 10) / parseInt(params.buffer, 10);
+					}
+				});
+				
+				calcFactory.setParams(function(state){
+					params.output = state[0];
+					params.buffer = state[1];
+					params.lastNumber = state[2];
+					var strategy = equalStrategies.getValue(state[3]);
+					if(strategy){
+						strategy();
+					};
+					calcFactory.eqData(params);
+				});					
+				
+				$scope.equal = function(){					
 					calcFactory.equality();
 				};
 				
@@ -76,7 +130,6 @@ define(function(){
 				
 				$scope.getRandom = function(rndIndex){
 					var strategy = rndStrategies.getValue(rndIndex);
-					console.log(strategy);
 					strategy();
 				};
 				
