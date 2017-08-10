@@ -75,22 +75,22 @@ define(function(){
 					calcFactory.getOperation(operation);
 				};
 				
-				calcFactory.setOperation("+", function(params){
+				calcFactory.setOperation("+", function(){
 					params.output = parseInt(params.lastNumber, 10) + parseInt(params.buffer, 10);
 					params.buffer = parseInt(params.lastNumber, 10) + parseInt(params.buffer, 10);				
 				});
 				
-				calcFactory.setOperation("-", function(params){
+				calcFactory.setOperation("-", function(){
 					params.output = parseInt(params.lastNumber, 10) - parseInt(params.buffer, 10);
 					params.buffer = parseInt(params.lastNumber, 10) - parseInt(params.buffer, 10);				
 				});
 				
-				calcFactory.setOperation("*", function(params){
+				calcFactory.setOperation("*", function(){
 					params.output = parseInt(params.lastNumber, 10) * parseInt(params.buffer, 10);
 					params.buffer = parseInt(params.lastNumber, 10) * parseInt(params.buffer, 10);				
 				});
 				
-				calcFactory.setOperation("/", function(params){
+				calcFactory.setOperation("/", function(){
 					if (parseInt(params.buffer, 10) == 0){
 						window.alert("Деление на ноль невозможно!");
 					}

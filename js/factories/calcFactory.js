@@ -65,7 +65,7 @@ define(function(){
 				this.equality = function(){
 					var strategy = equalStrategies.getValue(lastOperation);
 					if(strategy){
-						strategy(clone);	
+						strategy();	
 					};		
 					lastOperation = null;					
 					setData();
