@@ -65,18 +65,7 @@ define(function(){
 				
 				$scope.getOper = function(operation){
 					calcFactory.getOperation(operation);
-				};
-				
-				var equalStrategies = new function(){	
-					var operations = {};					
-					
-					this.add = function(operationSymbol, operation){						
-						operations[operationSymbol] = operation;
-					};
-					this.getValue = function(operationSymbol){						
-						return operations[operationSymbol];
-					};
-				};
+				};				
 				
 				var params = {
 					output: "0",
@@ -84,22 +73,24 @@ define(function(){
 					lastNumber: "0"
 				};
 				
-				equalStrategies.add("+", function(){
+				calcFactory.setClone(params);
+				
+				calcFactory.setOperation("+", function(params){
 					params.output = parseInt(params.lastNumber, 10) + parseInt(params.buffer, 10);
 					params.buffer = parseInt(params.lastNumber, 10) + parseInt(params.buffer, 10);				
 				});
 				
-				equalStrategies.add("-", function(){
+				calcFactory.setOperation("-", function(params){
 					params.output = parseInt(params.lastNumber, 10) - parseInt(params.buffer, 10);
 					params.buffer = parseInt(params.lastNumber, 10) - parseInt(params.buffer, 10);				
 				});
 				
-				equalStrategies.add("*", function(){
+				calcFactory.setOperation("*", function(params){
 					params.output = parseInt(params.lastNumber, 10) * parseInt(params.buffer, 10);
 					params.buffer = parseInt(params.lastNumber, 10) * parseInt(params.buffer, 10);				
 				});
 				
-				equalStrategies.add("/", function(){
+				calcFactory.setOperation("/", function(params){
 					if (parseInt(params.buffer, 10) == 0){
 						window.alert("Деление на ноль невозможно!");
 					}
@@ -107,18 +98,7 @@ define(function(){
 						params.output = parseInt(params.lastNumber, 10) / parseInt(params.buffer, 10);
 						params.buffer = parseInt(params.lastNumber, 10) / parseInt(params.buffer, 10);
 					}
-				});
-				
-				calcFactory.setParams(function(state){
-					params.output = state[0];
-					params.buffer = state[1];
-					params.lastNumber = state[2];
-					var strategy = equalStrategies.getValue(state[3]);
-					if(strategy){
-						strategy();
-					};
-					calcFactory.eqData(params);
-				});					
+				});				
 				
 				$scope.equal = function(){					
 					calcFactory.equality();

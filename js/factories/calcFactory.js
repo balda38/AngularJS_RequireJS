@@ -12,16 +12,32 @@ define(function(){
 				var lastOperation = null;
 				var operationInfo = null;		
 				
+				var equalStrategies = new function(){	
+					var operations = {};					
+					
+					this.add = function(operationSymbol, operation){						
+						operations[operationSymbol] = operation;
+					};
+					this.getValue = function(operationSymbol){						
+						return operations[operationSymbol];
+					};
+				};
+				
+				this.setOperation = function(operationSymbol, operation){
+					equalStrategies.add(operationSymbol, operation);
+				};
+				
+				var clone = {};
+				
+				this.setClone = function(params){
+					clone = params;
+				};
+				
 				var onUpdate = function(){};
-				var paramsUpdate = function(){};
 				
 				this.setOnUpdate = function(cb){
 					onUpdate = cb;
 				};		
-
-				this.setParams = function(cb){
-					paramsUpdate = cb;
-				};
 								
 				this.initData = function(){
 					setData();
@@ -49,33 +65,21 @@ define(function(){
 					setData();
 				};
 				
-				var clone = null;
-				this.eqData = function(params){
-					clone = params;					
-				};
-				
-				this.equality = function(){						
-					setParams();
-					output = clone.output;
-					buffer = clone.buffer;
-					lastNumber = clone.lastNumber;
+				this.equality = function(){
+					var strategy = equalStrategies.getValue(lastOperation);
+					if(strategy){
+						clone.output = output;
+						clone.buffer = buffer;
+						clone.lastNumber = lastNumber;
+						strategy(clone);	
+						output = clone.output;
+						buffer = clone.buffer;
+						lastNumber = clone.lastNumber;
+					};		
 					lastOperation = null;					
 					setData();
 				};
-				
-				function setParams(){
-					var array = [output, buffer, lastNumber, lastOperation];
-					paramsUpdate(array);
-				};
-				
-				this.resetAll = function(){
-					output = "0";
-					buffer = "0";
-					lastNumber = null;
-					lastOperation = null;
-					setData();
-				};
-				
+
 				this.resetAll = function(){
 					output = "0";
 					buffer = "0";
