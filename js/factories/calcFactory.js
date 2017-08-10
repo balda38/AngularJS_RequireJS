@@ -6,9 +6,6 @@ define(function(){
 		
 		return function(){
 			return new function(){					
-				var output = "0";
-				var buffer = "0";
-				var lastNumber = "0";
 				var lastOperation = null;
 				var operationInfo = null;		
 				
@@ -44,46 +41,40 @@ define(function(){
 				};
 				
 				this.updateOutput = function(number){			
-					if (output == "0" || lastOperation == "="){
-						output = number;
-						buffer = number;
+					if (clone.output == "0" || lastOperation == "="){
+						clone.output = number;
+						clone.buffer = number;
 						lastOperation = null;
 					}
 					else {
-						output += String(number);
-						buffer += String(number);
+						clone.output += String(number);
+						clone.buffer += String(number);
 					}
 					setData();
 				};
 				
 				this.getOperation = function(operation){
 					this.equality();
-					output += operation;
+					clone.output += operation;
 					lastOperation = operation;
-					lastNumber = parseInt(buffer, 10);
-					buffer = "0";
+					clone.lastNumber = parseInt(clone.buffer, 10);
+					clone.buffer = "0";
 					setData();
 				};
 				
 				this.equality = function(){
 					var strategy = equalStrategies.getValue(lastOperation);
 					if(strategy){
-						clone.output = output;
-						clone.buffer = buffer;
-						clone.lastNumber = lastNumber;
 						strategy(clone);	
-						output = clone.output;
-						buffer = clone.buffer;
-						lastNumber = clone.lastNumber;
 					};		
 					lastOperation = null;					
 					setData();
 				};
 
 				this.resetAll = function(){
-					output = "0";
-					buffer = "0";
-					lastNumber = null;
+					clone.output = "0";
+					clone.buffer = "0";
+					clone.lastNumber = null;
 					lastOperation = null;
 					setData();
 				};
@@ -93,15 +84,15 @@ define(function(){
 					var operations = ["+", "-", "*", "/"];
 					var operationIndex = Math.floor(Math.random() * operations.length);
 					lastOperation = operations[operationIndex];
-					lastNumber = buffer;
-					buffer = Math.floor(Math.random() * 1000);
-					operationInfo = lastOperation + buffer;
+					clone.lastNumber = clone.buffer;
+					clone.buffer = Math.floor(Math.random() * 1000);
+					operationInfo = lastOperation + clone.buffer;
 					this.equality();
 					setData();
 				};
 				
 				function setData(){
-					var array = [output, lastNumber, operationInfo]
+					var array = [clone.output, clone.lastNumber, operationInfo]
 					onUpdate(array);
 				};			
 			};

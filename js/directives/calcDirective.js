@@ -49,8 +49,16 @@ define(function(){
 			scope:{},
 			controller: function($scope, $attrs, $timeout, $q){											
 				
-				var calcFactory = calculatorFactory();
-
+				var calcFactory = calculatorFactory();				
+								
+				var params = {
+					output: "0",
+					buffer: "0",
+					lastNumber: "0"
+				};
+				
+				calcFactory.setClone(params);
+				
 				calcFactory.setOnUpdate(function(state){
 					$scope.output = state[0];
 					$scope.lastNumber = state[1];
@@ -65,15 +73,7 @@ define(function(){
 				
 				$scope.getOper = function(operation){
 					calcFactory.getOperation(operation);
-				};				
-				
-				var params = {
-					output: "0",
-					buffer: "0",
-					lastNumber: "0"
 				};
-				
-				calcFactory.setClone(params);
 				
 				calcFactory.setOperation("+", function(params){
 					params.output = parseInt(params.lastNumber, 10) + parseInt(params.buffer, 10);
