@@ -49,16 +49,8 @@ define(function(){
 			scope:{},
 			controller: function($scope, $attrs, $timeout, $q){											
 				
-				var calcFactory = calculatorFactory();				
-								
-				var params = {
-					output: "0",
-					buffer: "0",
-					lastNumber: "0"
-				};
-				
-				calcFactory.setClone(params);
-				
+				var calcFactory = calculatorFactory();
+
 				calcFactory.setOnUpdate(function(state){
 					$scope.output = state[0];
 					$scope.lastNumber = state[1];
@@ -73,24 +65,24 @@ define(function(){
 				
 				$scope.getOper = function(operation){
 					calcFactory.getOperation(operation);
-				};
+				};				
 				
-				calcFactory.setOperation("+", function(){
+				calcFactory.setOperation("+", function(params){
 					params.output = parseInt(params.lastNumber, 10) + parseInt(params.buffer, 10);
 					params.buffer = parseInt(params.lastNumber, 10) + parseInt(params.buffer, 10);				
 				});
 				
-				calcFactory.setOperation("-", function(){
+				calcFactory.setOperation("-", function(params){
 					params.output = parseInt(params.lastNumber, 10) - parseInt(params.buffer, 10);
 					params.buffer = parseInt(params.lastNumber, 10) - parseInt(params.buffer, 10);				
 				});
 				
-				calcFactory.setOperation("*", function(){
+				calcFactory.setOperation("*", function(params){
 					params.output = parseInt(params.lastNumber, 10) * parseInt(params.buffer, 10);
 					params.buffer = parseInt(params.lastNumber, 10) * parseInt(params.buffer, 10);				
 				});
 				
-				calcFactory.setOperation("/", function(){
+				calcFactory.setOperation("/", function(params){
 					if (parseInt(params.buffer, 10) == 0){
 						window.alert("Деление на ноль невозможно!");
 					}
