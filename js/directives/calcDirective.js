@@ -1,3 +1,4 @@
+'use strict';
 define(function(){
 	var directiveModule = angular.module('calcDirective', []);	
 
@@ -37,9 +38,9 @@ define(function(){
 				"</div>"+
 				"<div class='col-md-2'>"+
 					"<div class='form-inline'>"+
-						"<button class='btn btn-default' ng-click='rndOper1()' value='random' style='width:200px; text-align:center'>Зарандомить (setTimeout)! :)</button>"+
-						"<button class='btn btn-default' ng-click='rndOper2()' value='random' style='width:200px; text-align:left'>Зарандомить ($timeout)! :)</button>"+
-						"<button class='btn btn-default' ng-click='rndOper3()' value='random' style='width:200px; text-align:left'>Зарандомить (Promise)! :)</button>"+
+						"<button class='btn btn-default' ng-click='getRandom(0)' value='random' style='width:200px; text-align:center'>Зарандомить (setTimeout)! :)</button>"+
+						"<button class='btn btn-default' ng-click='getRandom(1)' value='random' style='width:200px; text-align:left'>Зарандомить ($timeout)! :)</button>"+
+						"<button class='btn btn-default' ng-click='getRandom(2)' value='random' style='width:200px; text-align:left'>Зарандомить (Promise)! :)</button>"+
 					"</div>"+
 					"<div class='form-inline'>"+
 						"<p name='information'>С числом {{lastNumber || 0}} была произведена операция: {{operationInfo}}</p>"+
@@ -64,9 +65,34 @@ define(function(){
 				
 				$scope.getOper = function(operation){
 					calcFactory.getOperation(operation);
-				};
+				};				
 				
-				$scope.equal = function(){
+				calcFactory.setOperation("+", function(params){
+					params.output = parseInt(params.lastNumber, 10) + parseInt(params.buffer, 10);
+					params.buffer = parseInt(params.lastNumber, 10) + parseInt(params.buffer, 10);				
+				});
+				
+				calcFactory.setOperation("-", function(params){
+					params.output = parseInt(params.lastNumber, 10) - parseInt(params.buffer, 10);
+					params.buffer = parseInt(params.lastNumber, 10) - parseInt(params.buffer, 10);				
+				});
+				
+				calcFactory.setOperation("*", function(params){
+					params.output = parseInt(params.lastNumber, 10) * parseInt(params.buffer, 10);
+					params.buffer = parseInt(params.lastNumber, 10) * parseInt(params.buffer, 10);				
+				});
+				
+				calcFactory.setOperation("/", function(params){
+					if (parseInt(params.buffer, 10) == 0){
+						window.alert("Деление на ноль невозможно!");
+					}
+					else {
+						params.output = parseInt(params.lastNumber, 10) / parseInt(params.buffer, 10);
+						params.buffer = parseInt(params.lastNumber, 10) / parseInt(params.buffer, 10);
+					}
+				});				
+				
+				$scope.equal = function(){					
 					calcFactory.equality();
 				};
 				
@@ -74,25 +100,41 @@ define(function(){
 					calcFactory.resetAll();
 				};
 				
-				$scope.rndOper1 = function(){
+				$scope.getRandom = function(rndIndex){
+					var strategy = rndStrategies.getValue(rndIndex);
+					strategy();
+				};
+				
+				var rndStrategies = new function(){	
+					var operations = [];					
+					
+					this.add = function(operationIndex, operation){						
+						operations[operationIndex] = operation;
+					};
+					this.getValue = function(operationIndex){
+						return operations[operationIndex];
+					};
+				};
+				
+				rndStrategies.add(0, function(){
 					window.setTimeout(function(){
 						$scope.$apply(function(){
 							calcFactory.getRandomOperation();	
 						})
 					}, Math.floor(Math.random() * 5000));
-				};
+				});
 				
 				var count = 0;
-				$scope.rndOper2 = function(){
+				rndStrategies.add(1, function(){
 					$timeout(function(){
 						if (count == 0){					
 							calcFactory.getRandomOperation();		
 						}
 					}, Math.floor(Math.random() * 5000));	
 					count = 0;
-				};
+				});
 				
-				$scope.rndOper3 = function(){
+				rndStrategies.add(2, function(){
 					var promise = $q(function(resolve, reject){
 						$timeout(function(){
 							resolve("result");
@@ -109,7 +151,7 @@ define(function(){
 					);
 					
 					return promise;
-				};	
+				});	
 			},
 			link: function (scope, element, attrs) {					
 			}	
